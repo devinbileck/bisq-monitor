@@ -71,7 +71,7 @@ def main():
     parser.add_argument("--socks_host", default="127.0.0.1", help="the socks5 host to connect to (default=127.0.0.1)")
     parser.add_argument("--socks_port", type=int, default=9050, help="the socks5 port (default=9050)")
     parser.add_argument("--poll_interval", type=int, default=120, help="the interval in seconds to poll for data (default=120)")
-    parser.add_argument("--debug", type=bool, default=False, help="log debug output")
+    parser.add_argument("--debug", action='store_true', default=False, help="log debug output")
     args = parser.parse_args()
 
     tor_session.socks_host = args.socks_host
