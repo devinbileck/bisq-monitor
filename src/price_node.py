@@ -1,12 +1,21 @@
-from exchange_rate import ExchangeRate
-from fee_rate import FeeRate
-from tor_session import IncorrectResponseData
+import requests
+
+from src.exchange_rate import ExchangeRate
+from src.fee_rate import FeeRate
+from src.tor_session import IncorrectResponseData
 
 
 class PriceNode(object):
 
     def __init__(self, address):
         self.address = address
+
+    def is_online(self, tor_session):
+        try:
+            self.get_version(tor_session)
+            return True
+        except requests.exceptions.ConnectionError:
+            return False
 
     def get_fees(self, tor_session):
         fees = {}
@@ -35,6 +44,11 @@ class PriceNode(object):
 
     def get_version(self, tor_session):
         return tor_session.get_text_data("http://{}/getVersion".format(self.address))
+
+    def __eq__(self, other):
+        if isinstance(other, PriceNode) and other.address == self.address:
+            return True
+        return False
 
     def __repr__(self):
         return "<PriceNode {}>".format(self.address)

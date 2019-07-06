@@ -10,6 +10,15 @@ class ExchangeRate(object):
         self.timestamp = timestamp
         self.provider = provider
 
+    def __eq__(self, other):
+        if isinstance(other, ExchangeRate) \
+                and other.currency == self.currency \
+                and other.price == self.price \
+                and other.timestamp == self.timestamp \
+                and other.provider == self.provider:
+            return True
+        return False
+
     def __repr__(self):
         return "<ExchangeRate {0}={1} @ {2} UTC from {3}>".format(
             self.currency, self.price,
