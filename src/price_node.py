@@ -6,9 +6,14 @@ from src.tor_session import IncorrectResponseData
 
 
 class PriceNode(object):
+    """Represents a Bisq network price node."""
 
     def __init__(self, address):
-        self.address = address
+        self.__address = address
+
+    @property
+    def address(self):
+        return self.__address
 
     def is_online(self, tor_session):
         try:
@@ -17,7 +22,10 @@ class PriceNode(object):
         except requests.exceptions.ConnectionError:
             return False
 
-    def get_fees(self, tor_session):
+    def get_version(self, tor_session):
+        return tor_session.get_text_data("http://{}/getVersion".format(self.address))
+
+    def get_current_fees(self, tor_session):
         fees = {}
         json_data = tor_session.get_json_data("http://{}/getFees".format(self.address))
         if 'dataMap' not in json_data:
@@ -30,7 +38,7 @@ class PriceNode(object):
             fees[currency] = fee_rate
         return fees
 
-    def get_all_market_prices(self, tor_session):
+    def get_current_market_prices(self, tor_session):
         prices = {}
         json_data = tor_session.get_json_data("http://{}/getAllMarketPrices".format(self.address))
         if 'data' not in json_data:
@@ -41,9 +49,6 @@ class PriceNode(object):
             exchange_rate = ExchangeRate(currency['currencyCode'], currency['price'], currency['timestampSec']/1000, currency['provider'])
             prices[currency['currencyCode']] = exchange_rate
         return prices
-
-    def get_version(self, tor_session):
-        return tor_session.get_text_data("http://{}/getVersion".format(self.address))
 
     def __eq__(self, other):
         if isinstance(other, PriceNode) and other.address == self.address:

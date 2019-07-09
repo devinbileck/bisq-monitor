@@ -5,9 +5,21 @@ class FeeRate(object):
     """Represents the mining fee rate for a given base currency."""
 
     def __init__(self, currency, price, timestamp):
-        self.currency = currency
-        self.price = price
-        self.timestamp = timestamp
+        self.__currency = currency
+        self.__price = price
+        self.__timestamp = timestamp
+
+    @property
+    def currency(self):
+        return self.__currency
+
+    @property
+    def price(self):
+        return self.__price
+
+    @property
+    def timestamp(self):
+        return self.__timestamp
 
     def __eq__(self, other):
         if isinstance(other, FeeRate) \
