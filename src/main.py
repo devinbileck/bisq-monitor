@@ -2,16 +2,18 @@ import argparse
 import logging
 import os
 
-from src.flask_app import FlaskApp, FlaskApp
+from src.web_app import WebApp
 from src.price_node_monitor import PriceNodeMonitor
-from src.tor_session import TorSession
+from src.library.tor_session import TorSession
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Monitor Bisq nodes")
-    parser.add_argument("--socks_host", default="127.0.0.1", help="the socks5 host to connect to (default=127.0.0.1)")
+    parser = argparse.ArgumentParser(description="Monitor Bisq network")
+    parser.add_argument("--socks_host", default="127.0.0.1", help="the socks5 host to connect to for TOR (default=127.0.0.1)")
     parser.add_argument("--socks_port", type=int, default=9050, help="the socks5 port (default=9050)")
-    parser.add_argument("--poll_interval", type=int, default=120, help="the interval in seconds to poll for data (default=120)")
+    parser.add_argument("--web_host", default="127.0.0.1", help="the hostname to listen on for the web interface (default=127.0.0.1)")
+    parser.add_argument("--web_port", type=int, default=5000, help="the port of the web interface (default=5000)")
+    parser.add_argument("--poll_interval", type=int, default=120, help="the interval in seconds to poll Bisq network nodes for data (default=120)")
     parser.add_argument("--debug", action='store_true', default=False, help="log debug output")
     args = parser.parse_args()
 
@@ -22,7 +24,7 @@ def main():
     logging_level = logging.INFO
     if args.debug:
         logging_level = logging.DEBUG
-    logging.basicConfig(level=logging_level, format='%(asctime)s | %(name)s | %(levelname)s | %(message)s')
+    logging.basicConfig(level=logging_level, format='%(asctime)s | %(name)s | %(filename)s:%(lineno)d | %(levelname)s | %(message)s')
     log = logging.getLogger(__name__)
 
     resource_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, "resources")
@@ -43,16 +45,15 @@ def main():
         "XMR"
     ]
 
-    log.info("Starting Bisq Monitor")
+    log.info("Starting price node monitor")
     log.info("Price nodes: {}".format(price_nodes))
     log.info("Monitored markets: {}".format(monitored_markets))
-    log.info("Resource path: {}".format(resource_path))
-    monitor = PriceNodeMonitor(tor_session, price_nodes, monitored_markets, args.poll_interval, resource_path)
-    monitor.start()
+    price_node_monitor = PriceNodeMonitor(tor_session, price_nodes, monitored_markets, args.poll_interval, resource_path)
+    price_node_monitor.start()
 
-    log.info("Starting flask")
-    flask_app = FlaskApp("FlaskApp")
-    flask_app.run()
+    log.info("Starting web application")
+    web_app = WebApp(args.web_host, args.web_port)
+    web_app.run()
 
 
 if __name__ == "__main__":

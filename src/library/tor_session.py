@@ -1,5 +1,9 @@
+import logging
+
 import requests
 from requests import HTTPError
+
+log = logging.getLogger(__name__)
 
 
 class TorSession(object):
@@ -38,10 +42,14 @@ class TorSession(object):
         }
 
     def get_response(self, url):
-        response = self.__session.get(url)
-        if response.status_code != 200:
-            raise HTTPError("{0} returned HTTP error {1}".format(url, response.status_code))
-        return response
+        try:
+            response = self.__session.get(url)
+        except Exception as ex:
+            log.error(ex)
+        else:
+            if response.status_code != 200:
+                raise HTTPError("{0} returned HTTP error {1}".format(url, response.status_code))
+            return response
 
     def get_text_data(self, url):
         response = self.get_response(url)

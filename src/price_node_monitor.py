@@ -7,7 +7,7 @@ from datetime import datetime
 
 import numpy
 
-from src.price_node import PriceNode
+from src.library.bisq.price_node import PriceNode
 
 log = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ class PriceNodeMonitor(threading.Thread):
     MAX_TX_FEE_DEVIATION_PERCENTAGE = 10
 
     def __init__(self, tor_session, price_nodes, monitored_markets, poll_interval, resource_path):
-        super(PriceNodeMonitor, self).__init__()
+        super(PriceNodeMonitor, self).__init__(name="PriceNodeMonitor")
         self.__tor_session = tor_session
         self.__price_nodes = price_nodes
         self.__monitored_markets = monitored_markets
@@ -104,9 +104,9 @@ class PriceNodeMonitor(threading.Thread):
                 if deviation > self.MAX_MARKET_PRICE_DEVIATION_PERCENTAGE:
                     nodes_with_market_price = [(x['nodeAddress'], x.get(market, None)) for x in price_data]
                     log.warning(
-                        "Market price deviates between nodes by more than {}% ({:.2f}%) for {} market; {}".format(self.MAX_MARKET_PRICE_DEVIATION_PERCENTAGE,
-                                                                                                                  deviation, market,
-                                                                                                                  nodes_with_market_price))
+                        "Market price deviates between nodes by more than {}% ({:.2f}%) for {}; {}".format(self.MAX_MARKET_PRICE_DEVIATION_PERCENTAGE,
+                                                                                                           deviation, market,
+                                                                                                           nodes_with_market_price))
 
     def write_price_data_to_csv(self, resource_path, filename, price_data):
         with open(os.path.join(resource_path, filename), "w", newline="") as csv_file:
@@ -128,7 +128,7 @@ class PriceNodeMonitor(threading.Thread):
                 writer = csv.writer(csv_file)
                 fee_rates = [datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S') + " UTC"] + [str(x[currency.lower() + 'TxFee'].price)
                                                                                           if currency.lower() + 'TxFee' in x
-                                                                                          and x[currency.lower() + 'TxFee']
+                                                                                             and x[currency.lower() + 'TxFee']
                                                                                           else -1
                                                                                           for x in price_data]
                 writer.writerow(fee_rates)
@@ -145,7 +145,7 @@ class PriceNodeMonitor(threading.Thread):
                 writer = csv.writer(csv_file)
                 exchange_rates = [datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S') + " UTC"] + [x[market.lower() + 'MarketPrice'].price
                                                                                                if market.lower() + 'MarketPrice' in x
-                                                                                               and x[market.lower() + 'MarketPrice']
+                                                                                                  and x[market.lower() + 'MarketPrice']
                                                                                                else -1
                                                                                                for x in price_data]
                 writer.writerow(exchange_rates)

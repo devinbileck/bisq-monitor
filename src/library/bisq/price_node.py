@@ -1,8 +1,8 @@
 import requests
 
-from src.exchange_rate import ExchangeRate
-from src.fee_rate import FeeRate
-from src.tor_session import IncorrectResponseData
+from src.library.bisq.exchange_rate import ExchangeRate
+from src.library.bisq.fee_rate import FeeRate
+from src.library.tor_session import IncorrectResponseData
 
 
 class PriceNode(object):

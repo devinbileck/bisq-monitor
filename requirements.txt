@@ -1,5 +1,8 @@
 flask
+flask_restful
 numpy
 pandas
 plotly
 requests[socks]
+SQLAlchemy
+werkzeug
