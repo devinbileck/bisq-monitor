@@ -1,6 +1,7 @@
 import csv
 import logging
 import os
+import threading
 import time
 from datetime import datetime
 
@@ -11,35 +12,26 @@ from src.price_node import PriceNode
 log = logging.getLogger(__name__)
 
 
-class PriceNodeMonitor(object):
+class PriceNodeMonitor(threading.Thread):
     """Monitors the Bisq network price nodes."""
 
     MAX_MARKET_PRICE_DEVIATION_PERCENTAGE = 2
     MAX_TX_FEE_DEVIATION_PERCENTAGE = 10
 
-    def __init__(self, tor_session, poll_interval):
+    def __init__(self, tor_session, price_nodes, monitored_markets, poll_interval, resource_path):
+        super(PriceNodeMonitor, self).__init__()
         self.__tor_session = tor_session
+        self.__price_nodes = price_nodes
+        self.__monitored_markets = monitored_markets
         self.__poll_interval = poll_interval
-        self.__price_nodes = [
-            "44mgyoe2b6oqiytt.onion",
-            "5bmpx76qllutpcyp.onion",
-            "xc3nh4juf2hshy7e.onion",
-            "62nvujg5iou3vu3i.onion",
-            "ceaanhbvluug4we6.onion"]
-        self.__monitored_markets = [
-            "USD",
-            "EUR",
-            "CAD",
-            "XMR"
-        ]
+        self.__resource_path = resource_path
+        self.__historical_fee_rates = []
+        self.__historical_market_prices = []
+        self.is_running = False
 
     @property
     def tor_session(self):
         return self.__tor_session
-
-    @property
-    def poll_interval(self):
-        return self.__poll_interval
 
     @property
     def price_nodes(self):
@@ -49,14 +41,26 @@ class PriceNodeMonitor(object):
     def monitored_markets(self):
         return self.__monitored_markets
 
-    def run(self, resource_path):
-        while True:
+    @property
+    def poll_interval(self):
+        return self.__poll_interval
+
+    @property
+    def resource_path(self):
+        return self.__resource_path
+
+    def run(self):
+        self.is_running = True
+        while self.is_running:
             price_data = self.fetch_price_data()
             self.analyze_price_data(price_data)
-            self.write_price_data_to_csv(resource_path, "current_price_data.csv", price_data)
-            self.write_fee_rates_to_csv(resource_path, "historical_fee_rates.csv", price_data)
-            self.write_exchange_rates_to_csv(resource_path, "historical_exchange_rates.csv", price_data)
+            self.write_price_data_to_csv(self.resource_path, "current_price_data.csv", price_data)
+            self.write_fee_rates_to_csv(self.resource_path, "historical_fee_rates.csv", price_data)
+            self.write_exchange_rates_to_csv(self.resource_path, "historical_exchange_rates.csv", price_data)
             time.sleep(self.poll_interval)
+
+    def stop(self):
+        self.is_running = False
 
     def fetch_price_data(self):
         price_data = []

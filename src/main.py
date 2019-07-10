@@ -2,6 +2,7 @@ import argparse
 import logging
 import os
 
+from src.flask_app import FlaskApp, FlaskApp
 from src.price_node_monitor import PriceNodeMonitor
 from src.tor_session import TorSession
 
@@ -24,17 +25,34 @@ def main():
     logging.basicConfig(level=logging_level, format='%(asctime)s | %(name)s | %(levelname)s | %(message)s')
     log = logging.getLogger(__name__)
 
-    log.info("Starting Bisq Monitor")
+    resource_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, "resources")
+    if not os.path.isdir(resource_path):
+        os.mkdir(resource_path)
 
-    monitor = PriceNodeMonitor(tor_session, args.poll_interval)
-    try:
-        resource_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, "resources")
-        log.debug("Resource path: {}".format(resource_path))
-        if not os.path.isdir(resource_path):
-            os.mkdir(resource_path)
-        monitor.run(resource_path)
-    except KeyboardInterrupt:
-        pass
+    price_nodes = [
+        "44mgyoe2b6oqiytt.onion",
+        "5bmpx76qllutpcyp.onion",
+        "xc3nh4juf2hshy7e.onion",
+        "62nvujg5iou3vu3i.onion",
+        "ceaanhbvluug4we6.onion"
+    ]
+    monitored_markets = [
+        "USD",
+        "EUR",
+        "CAD",
+        "XMR"
+    ]
+
+    log.info("Starting Bisq Monitor")
+    log.info("Price nodes: {}".format(price_nodes))
+    log.info("Monitored markets: {}".format(monitored_markets))
+    log.info("Resource path: {}".format(resource_path))
+    monitor = PriceNodeMonitor(tor_session, price_nodes, monitored_markets, args.poll_interval, resource_path)
+    monitor.start()
+
+    log.info("Starting flask")
+    flask_app = FlaskApp("FlaskApp")
+    flask_app.run()
 
 
 if __name__ == "__main__":
