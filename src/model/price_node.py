@@ -3,9 +3,9 @@ import json
 from sqlalchemy import Column
 from sqlalchemy.types import BigInteger, String
 
-from src.library.server_cache import ServerCache
+from src.library.configuration import Configuration
 
-db = ServerCache.database
+db = Configuration.database
 
 
 class PriceNode(db.Model):

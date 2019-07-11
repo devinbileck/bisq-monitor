@@ -5,9 +5,9 @@ from sqlalchemy import Column, ForeignKey
 from sqlalchemy.types import BigInteger, String, DateTime
 
 from src.library.bisq.price_node import PriceNode
-from src.library.server_cache import ServerCache
+from src.library.configuration import Configuration
 
-db = ServerCache.database
+db = Configuration.database
 
 
 class ExchangeRate(db.Model):

@@ -1,8 +1,12 @@
+future
 flask
 flask_restful
+gitpython
 numpy
 pandas
 plotly
+PyYAML
 requests[socks]
 SQLAlchemy
+SQLAlchemy-Utils
 werkzeug

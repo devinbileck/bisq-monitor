@@ -1,0 +1,6 @@
+{
+  "rest_network_port": "5000",
+  "backup_location": "C:\\bacnet_reserve_backup\\backup.json",
+  "log_filename": "C:\\bacnet_reserve_backup\\app.log",
+  "version_filename": "C:\\bacnet_reserve\\tools\\bacnet_reservation\\version.txt",
+}

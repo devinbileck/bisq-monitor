@@ -2,6 +2,10 @@ import argparse
 import logging
 import os
 
+from sqlalchemy_utils import create_database, database_exists
+
+from src.library.configuration import Configuration
+from src.library.configuration_builder import config_from_file
 from src.web_app import WebApp
 from src.price_node_monitor import PriceNodeMonitor
 from src.library.tor_session import TorSession
@@ -9,6 +13,7 @@ from src.library.tor_session import TorSession
 
 def main():
     parser = argparse.ArgumentParser(description="Monitor Bisq network")
+    parser.add_argument("--config_file", default="config.json", help="the configuration file to load parameters from (default=config.json)")
     parser.add_argument("--socks_host", default="127.0.0.1", help="the socks5 host to connect to for TOR (default=127.0.0.1)")
     parser.add_argument("--socks_port", type=int, default=9050, help="the socks5 port (default=9050)")
     parser.add_argument("--web_host", default="127.0.0.1", help="the hostname to listen on for the web interface (default=127.0.0.1)")
@@ -17,15 +22,29 @@ def main():
     parser.add_argument("--debug", action='store_true', default=False, help="log debug output")
     args = parser.parse_args()
 
-    tor_session = TorSession()
-    tor_session.socks_host = args.socks_host
-    tor_session.socks_port = args.socks_port
-
     logging_level = logging.INFO
     if args.debug:
         logging_level = logging.DEBUG
     logging.basicConfig(level=logging_level, format='%(asctime)s | %(name)s | %(filename)s:%(lineno)d | %(levelname)s | %(message)s')
     log = logging.getLogger(__name__)
+
+    if args.config_file and os.path.isfile(args.config_file):
+        config_from_file(args.config_file)
+
+    if not os.path.isdir(os.path.dirname(Configuration.log_filename)):
+        Configuration.log_filename = os.path.join(os.path.dirname(__file__), Configuration.log_filename)
+
+    if not database_exists(Configuration.database_path):
+        log.info("Creating database: %r" % Configuration.database_path)
+        create_database(Configuration.database_path)
+
+    #Configuration.database = SQLAlchemy(self.app)
+
+    Configuration.database.create_all()
+
+    tor_session = TorSession()
+    tor_session.socks_host = args.socks_host
+    tor_session.socks_port = args.socks_port
 
     resource_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir, "resources")
     if not os.path.isdir(resource_path):
