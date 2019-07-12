@@ -34,13 +34,13 @@ def main():
     if not os.path.isdir(os.path.dirname(Configuration.log_filename)):
         Configuration.log_filename = os.path.join(os.path.dirname(__file__), Configuration.log_filename)
 
-    if not database_exists(Configuration.database_path):
-        log.info("Creating database: %r" % Configuration.database_path)
-        create_database(Configuration.database_path)
+    #if not database_exists(Configuration.database_path):
+        #log.info("Creating database: %r" % Configuration.database_path)
+        #create_database(Configuration.database_path)
 
     #Configuration.database = SQLAlchemy(self.app)
 
-    Configuration.database.create_all()
+    #Configuration.database.create_all()
 
     tor_session = TorSession()
     tor_session.socks_host = args.socks_host

@@ -1,4 +1,4 @@
-import requests
+from requests import HTTPError
 
 from src.library.bisq.exchange_rate import ExchangeRate
 from src.library.bisq.fee_rate import FeeRate
@@ -19,7 +19,7 @@ class PriceNode(object):
         try:
             self.get_version(tor_session)
             return True
-        except requests.exceptions.ConnectionError:
+        except (ConnectionError, HTTPError):
             return False
 
     def get_version(self, tor_session):
