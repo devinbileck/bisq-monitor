@@ -52,11 +52,14 @@ class PriceNodeMonitor(threading.Thread):
     def run(self):
         self.is_running = True
         while self.is_running:
-            price_data = self.fetch_price_data()
-            self.analyze_price_data(price_data)
-            self.write_price_data_to_csv(self.resource_path, "current_price_data.csv", price_data)
-            self.write_fee_rates_to_csv(self.resource_path, "historical_fee_rates.csv", price_data)
-            self.write_exchange_rates_to_csv(self.resource_path, "historical_exchange_rates.csv", price_data)
+            try:
+                price_data = self.fetch_price_data()
+                self.analyze_price_data(price_data)
+                self.write_price_data_to_csv(self.resource_path, "current_price_data.csv", price_data)
+                self.write_fee_rates_to_csv(self.resource_path, "historical_fee_rates.csv", price_data)
+                self.write_exchange_rates_to_csv(self.resource_path, "historical_exchange_rates.csv", price_data)
+            except Exception as e:
+                log.error(e)
             time.sleep(self.poll_interval)
 
     def stop(self):

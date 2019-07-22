@@ -1,8 +1,12 @@
+import logging
+
 from requests import HTTPError
 
 from src.library.bisq.exchange_rate import ExchangeRate
 from src.library.bisq.fee_rate import FeeRate
 from src.library.tor_session import IncorrectResponseData
+
+log = logging.getLogger(__name__)
 
 
 class PriceNode(object):
@@ -19,8 +23,9 @@ class PriceNode(object):
         try:
             self.get_version(tor_session)
             return True
-        except (ConnectionError, HTTPError):
-            return False
+        except ConnectionError as e:
+            log.debug(e)
+        return False
 
     def get_version(self, tor_session):
         return tor_session.get_text_data("http://{}/getVersion".format(self.address))
