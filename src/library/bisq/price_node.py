@@ -27,8 +27,14 @@ class PriceNode(object):
             log.debug(e)
         return False
 
+    def get_info(self, tor_session):
+        return tor_session.get_json_data("http://{}/info".format(self.address))
+
     def get_version(self, tor_session):
         return tor_session.get_text_data("http://{}/getVersion".format(self.address))
+
+    def get_params(self, tor_session):
+        return tor_session.get_text_data("http://{}/getParams".format(self.address))
 
     def get_current_fees(self, tor_session):
         fees = {}
