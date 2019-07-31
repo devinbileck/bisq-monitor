@@ -13,7 +13,8 @@ class StringFormat(IntEnum):
     int = 5,  # 0-9, returns an integer
     json = 6,  # JSON/dict format that can be parsed by json module
     string_list = 7,  # Comma delimited list, returns a list of strings
-    url = 8  # URL format, returns a string
+    url = 8,  # URL format, returns a string
+    ip_address = 9  # IP address, returns a string
 
 
 def parse_string(string_input, expected_format):
@@ -74,4 +75,9 @@ def parse_string(string_input, expected_format):
             ParseException("String '%s' cannot be parsed with the given type %s.\n%s" % (string_input, expected_format, ex))
         else:
             return json_input
+    elif expected_format == StringFormat.ip_address:
+        reg = re.match(r'^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$', string_input)
+        if reg is not None:
+            return string_input
+        raise ParseException("String is not a valid IP address '%s'" % string_input)
     return ParseException("String '%s' cannot be parsed with the given type %s" % (string_input, expected_format))

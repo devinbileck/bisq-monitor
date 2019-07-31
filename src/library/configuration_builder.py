@@ -36,11 +36,15 @@ class ConfigurationBuilder(object):
 
     @classmethod
     def _get_configuration(cls):
-        Configuration.rest_network_port = cls.get_settings('rest_network_port', 5000, StringFormat.int)
+        Configuration.socks_host = cls.get_settings('socks_host', "127.0.0.1", StringFormat.ip_address)
+        Configuration.socks_port = cls.get_settings('socks_port', 9050, StringFormat.int)
+        Configuration.web_host = cls.get_settings('web_host', "127.0.0.1", StringFormat.ip_address)
+        Configuration.web_port = cls.get_settings('web_port', 5000, StringFormat.int)
+        Configuration.poll_interval = cls.get_settings('poll_interval', 120, StringFormat.int)
+        Configuration.debug = cls.get_settings('debug', False, StringFormat.boolean)
         Configuration.log_filename = cls.get_settings('log_filename', 'app.log')
         Configuration.version_filename = cls.get_settings('version_filename', 'version.txt')
-        Configuration.database_path = 'sqlite:///{db}'.format(
-            db=cls.get_settings('database_name', 'bisq-monitor.sqlite'))
+        Configuration.database_name = cls.get_settings('database_name', 'db.sqlite')
 
     @classmethod
     def _get_version(cls):

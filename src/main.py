@@ -2,13 +2,14 @@ import argparse
 import logging
 import os
 
-from sqlalchemy_utils import create_database, database_exists
-
 from src.library.configuration import Configuration
 from src.library.configuration_builder import config_from_file
-from src.web_app import WebApp
-from src.price_node_monitor import PriceNodeMonitor
+from src.library.database import Database
 from src.library.tor_session import TorSession
+from src.library.bisq.price_node import PriceNode
+from src.model.price_node_model import PriceNodeModel
+from src.price_node_monitor import PriceNodeMonitor
+from src.web_app import WebApp
 
 
 def main():
@@ -34,13 +35,7 @@ def main():
     if not os.path.isdir(os.path.dirname(Configuration.log_filename)):
         Configuration.log_filename = os.path.join(os.path.dirname(__file__), Configuration.log_filename)
 
-    #if not database_exists(Configuration.database_path):
-        #log.info("Creating database: %r" % Configuration.database_path)
-        #create_database(Configuration.database_path)
-
-    #Configuration.database = SQLAlchemy(self.app)
-
-    #Configuration.database.create_all()
+    Configuration.database = Database(Configuration.database_name)
 
     tor_session = TorSession()
     tor_session.socks_host = args.socks_host
@@ -51,11 +46,11 @@ def main():
         os.mkdir(resource_path)
 
     price_nodes = [
-        "44mgyoe2b6oqiytt.onion",
-        "5bmpx76qllutpcyp.onion",
-        "xc3nh4juf2hshy7e.onion",
-        "62nvujg5iou3vu3i.onion",
-        "ceaanhbvluug4we6.onion"
+        PriceNode("44mgyoe2b6oqiytt.onion"),
+        PriceNode("5bmpx76qllutpcyp.onion"),
+        PriceNode("xc3nh4juf2hshy7e.onion"),
+        PriceNode("62nvujg5iou3vu3i.onion"),
+        PriceNode("ceaanhbvluug4we6.onion")
     ]
     monitored_markets = [
         "USD",

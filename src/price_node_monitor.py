@@ -67,8 +67,7 @@ class PriceNodeMonitor(threading.Thread):
 
     def fetch_price_data(self):
         price_data = []
-        for node_address in self.price_nodes:
-            price_node = PriceNode(node_address)
+        for price_node in self.price_nodes:
             if price_node.is_online(self.tor_session):
                 node_version = price_node.get_version(self.tor_session)
                 fees = price_node.get_current_fees(self.tor_session)
@@ -79,7 +78,7 @@ class PriceNodeMonitor(threading.Thread):
                 fees = {}
                 all_market_prices = {}
             data = {
-                'nodeAddress': node_address,
+                'nodeAddress': price_node.address,
                 'nodeVersion': node_version,
                 'btcTxFee': fees.get('btc', None)}
             for market in self.monitored_markets:
