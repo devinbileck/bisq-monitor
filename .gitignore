@@ -110,4 +110,4 @@ venv.bak/
 
 # Others
 *.csv
-
+*.sqlite
