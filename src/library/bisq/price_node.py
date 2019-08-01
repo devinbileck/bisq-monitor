@@ -12,12 +12,17 @@ log = logging.getLogger(__name__)
 class PriceNode(object):
     """Represents a Bisq network price node."""
 
-    def __init__(self, address):
+    def __init__(self, address, operator=""):
         self.__address = address
+        self.__operator = operator
 
     @property
     def address(self):
         return self.__address
+
+    @property
+    def operator(self):
+        return self.__operator
 
     def is_online(self, tor_session):
         try:

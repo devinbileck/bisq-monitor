@@ -1,5 +1,5 @@
 class ConfigurationError(Exception):
-    """Raised when there are errors retrieving the configuration."""
+    """Raised when there are errors with the configuration."""
     pass
 
 

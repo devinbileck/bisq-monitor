@@ -1,0 +1,23 @@
+# Socks5 proxy settings for connecting to TOR
+socks5_host: 127.0.0.1
+socks5_port: 9150
+
+# Web interface settings
+web_host: 127.0.0.1
+web_port: 5000
+
+# Interval (in seconds) to poll Bisq network nodes for data
+poll_interval: 120
+
+price_nodes:
+  - {address: 44mgyoe2b6oqiytt.onion, operator: devinbileck}
+  - {address: 5bmpx76qllutpcyp.onion, operator: cbeams}
+  - {address: xc3nh4juf2hshy7e.onion, operator: emzy}
+  - {address: 62nvujg5iou3vu3i.onion, operator: alexej996}
+  - {address: ceaanhbvluug4we6.onion, operator: mrosseel}
+
+monitored_markets:
+  - USD
+  - EUR
+  - CAD
+  - XMR

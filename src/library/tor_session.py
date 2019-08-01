@@ -9,36 +9,36 @@ log = logging.getLogger(__name__)
 class TorSession(object):
     """Represents a session for communicating on the TOR network."""
 
-    def __init__(self, socks_host='127.0.0.1', socks_port=9050):
+    def __init__(self, socks5_host='127.0.0.1', socks5_port=9050):
         self.__session = requests.session()
-        self.__socks_host = socks_host
-        self.__socks_port = socks_port
+        self.__socks5_host = socks5_host
+        self.__socks5_port = socks5_port
         self.update_proxies()
 
     @property
-    def socks_host(self):
-        return self.__socks_host
+    def socks5_host(self):
+        return self.__socks5_host
 
-    @socks_host.setter
-    def socks_host(self, value):
-        self.__socks_host = value
+    @socks5_host.setter
+    def socks5_host(self, value):
+        self.__socks5_host = value
         self.update_proxies()
 
     @property
-    def socks_port(self):
-        return self.__socks_port
+    def socks5_port(self):
+        return self.__socks5_port
 
-    @socks_port.setter
-    def socks_port(self, value):
+    @socks5_port.setter
+    def socks5_port(self, value):
         if value < 0 or value > 65535:
             raise ValueError("Port out of range")
-        self.__socks_port = value
+        self.__socks5_port = value
         self.update_proxies()
 
     def update_proxies(self):
         self.__session.proxies = {
-            "http": "socks5h://{0}:{1}".format(self.__socks_host, self.__socks_port),
-            "https": "socks5h://{0}:{1}".format(self.__socks_host, self.__socks_port)
+            "http": "socks5h://{0}:{1}".format(self.__socks5_host, self.__socks5_port),
+            "https": "socks5h://{0}:{1}".format(self.__socks5_host, self.__socks5_port)
         }
 
     def get_response(self, url):

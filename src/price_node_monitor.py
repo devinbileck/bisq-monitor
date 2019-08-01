@@ -8,6 +8,8 @@ from datetime import datetime
 import numpy
 
 from src.library.bisq.price_node import PriceNode
+from src.library.configuration import Configuration
+from src.model.price_node_model import PriceNodeModel
 
 log = logging.getLogger(__name__)
 
@@ -28,6 +30,9 @@ class PriceNodeMonitor(threading.Thread):
         self.__historical_fee_rates = []
         self.__historical_market_prices = []
         self.is_running = False
+        for price_node in price_nodes:
+            Configuration.database.session.add(PriceNodeModel(price_node.address, price_node.operator))
+        Configuration.database.session.commit()
 
     @property
     def tor_session(self):
