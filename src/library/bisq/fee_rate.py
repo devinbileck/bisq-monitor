@@ -9,6 +9,22 @@ class FeeRate(object):
         self.__price = price
         self.__timestamp = timestamp
 
+    def __str__(self):
+        return "<FeeRate {0}={1} @ {2} UTC>".format(
+            self.currency, self.price, datetime.utcfromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S'))
+
+    def __repr__(self):
+        return "<FeeRate {0}={1} @ {2} UTC>".format(
+            self.currency, self.price, datetime.utcfromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S'))
+
+    def __eq__(self, other):
+        if isinstance(other, FeeRate) \
+                and other.currency == self.currency \
+                and other.price == self.price \
+                and other.timestamp == self.timestamp:
+            return True
+        return False
+
     @property
     def currency(self):
         return self.__currency
@@ -20,19 +36,3 @@ class FeeRate(object):
     @property
     def timestamp(self):
         return self.__timestamp
-
-    def __eq__(self, other):
-        if isinstance(other, FeeRate) \
-                and other.currency == self.currency \
-                and other.price == self.price \
-                and other.timestamp == self.timestamp:
-            return True
-        return False
-
-    def __repr__(self):
-        return "<FeeRate {0}={1} @ {2} UTC>".format(
-            self.currency, self.price, datetime.utcfromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S'))
-
-    def __str__(self):
-        return "<FeeRate {0}={1} @ {2} UTC>".format(
-            self.currency, self.price, datetime.utcfromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S'))

@@ -29,21 +29,6 @@ class ExchangeRateModel(Base):
         self.timestamp = timestamp
         self.provider = provider
 
-    def to_dict(self):
-        return {"price_node": self.price_node,
-                "currency": self.currency,
-                "price": self.price,
-                "timestamp": self.timestamp,
-                "provider": self.provider}
-
-    @staticmethod
-    def parse(**kwargs):
-        return ExchangeRateModel(kwargs['price_node'],
-                                 kwargs['currency'],
-                                 kwargs['price'],
-                                 kwargs['timestamp'],
-                                 kwargs['provider'])
-
     def __str__(self):
         return json.dumps(self.to_dict())
 
@@ -59,3 +44,18 @@ class ExchangeRateModel(Base):
                     self.provider == other.provider:
                 return True
         return False
+
+    def to_dict(self):
+        return {"price_node": self.price_node,
+                "currency": self.currency,
+                "price": self.price,
+                "timestamp": self.timestamp,
+                "provider": self.provider}
+
+    @staticmethod
+    def parse(**kwargs):
+        return ExchangeRateModel(kwargs['price_node'],
+                                 kwargs['currency'],
+                                 kwargs['price'],
+                                 kwargs['timestamp'],
+                                 kwargs['provider'])

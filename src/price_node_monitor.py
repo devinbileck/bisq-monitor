@@ -7,7 +7,6 @@ from datetime import datetime
 
 import numpy
 
-from src.library.bisq.price_node import PriceNode
 from src.library.configuration import Configuration
 from src.model.price_node_model import PriceNodeModel
 

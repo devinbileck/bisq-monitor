@@ -1,7 +1,7 @@
 import json
 
 from sqlalchemy import Column
-from sqlalchemy.types import Integer, String
+from sqlalchemy.types import String
 
 from src.model.base_model import Base
 
@@ -16,15 +16,6 @@ class PriceNodeModel(Base):
         self.address = address
         self.operator = operator
 
-    def to_dict(self):
-        return {"address": self.address, "operator": self.operator}
-
-    @staticmethod
-    def parse(**kwargs):
-        address = kwargs.get('address', None)
-        operator = kwargs.get('operator', None)
-        return PriceNodeModel.factory(address, operator)
-
     def __str__(self):
         return json.dumps(self.to_dict())
 
@@ -35,6 +26,15 @@ class PriceNodeModel(Base):
         if isinstance(other, PriceNodeModel):
             return self.address == other.address
         return False
+
+    def to_dict(self):
+        return {"address": self.address, "operator": self.operator}
+
+    @staticmethod
+    def parse(**kwargs):
+        address = kwargs.get('address', None)
+        operator = kwargs.get('operator', None)
+        return PriceNodeModel.factory(address, operator)
 
     @staticmethod
     def factory(address, operator=None):

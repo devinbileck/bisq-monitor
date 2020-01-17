@@ -11,14 +11,14 @@ from src.web_app import WebApp
 
 def main():
     parser = argparse.ArgumentParser(description="Monitor Bisq network")
-    parser.add_argument("--config_file", default="config.yml", help="the configuration file to load parameters from (default=config.yml)")
-    parser.add_argument("--debug", action='store_true', default=False, help="log debug output")
+    parser.add_argument("-c", "--config_file", default="config.yml", help="the configuration file to load parameters from (default=config.yml)")
+    parser.add_argument("-d", "--debug", action="store_true", default=False, help="log debug output")
     args = parser.parse_args()
 
     logging_level = logging.INFO
     if args.debug:
         logging_level = logging.DEBUG
-    logging.basicConfig(level=logging_level, format='%(asctime)s | %(name)s | %(filename)s:%(lineno)d | %(levelname)s | %(message)s')
+    logging.basicConfig(level=logging_level, format="%(asctime)s | %(name)s | %(filename)s:%(lineno)d | %(levelname)s | %(message)s")
     log = logging.getLogger(__name__)
 
     if args.config_file and os.path.isfile(args.config_file):

@@ -2,7 +2,6 @@ import json
 import os
 
 import yaml
-from future.utils import with_metaclass
 from git import Repo
 
 from src.library.database import Database
@@ -11,7 +10,7 @@ from src.library.singleton import SingletonMetaClass
 from src.library.string_helpers import StringFormat, parse_string
 
 
-class Configuration(with_metaclass(SingletonMetaClass, object)):
+class Configuration(metaclass=SingletonMetaClass):
     socks5_host = "127.0.0.1"
     socks5_port = 9050
     web_host = "127.0.0.1"

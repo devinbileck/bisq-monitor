@@ -10,6 +10,25 @@ class ExchangeRate(object):
         self.__timestamp = timestamp
         self.__provider = provider
 
+    def __str__(self):
+        return "<ExchangeRate {0}={1} @ {2} UTC from {3}>".format(
+            self.currency, self.price,
+            datetime.utcfromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S'), self.provider)
+
+    def __repr__(self):
+        return "<ExchangeRate {0}={1} @ {2} UTC from {3}>".format(
+            self.currency, self.price,
+            datetime.utcfromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S'), self.provider)
+
+    def __eq__(self, other):
+        if isinstance(other, ExchangeRate) \
+                and other.currency == self.currency \
+                and other.price == self.price \
+                and other.timestamp == self.timestamp \
+                and other.provider == self.provider:
+            return True
+        return False
+
     @property
     def currency(self):
         return self.__currency
@@ -25,22 +44,3 @@ class ExchangeRate(object):
     @property
     def provider(self):
         return self.__provider
-
-    def __eq__(self, other):
-        if isinstance(other, ExchangeRate) \
-                and other.currency == self.currency \
-                and other.price == self.price \
-                and other.timestamp == self.timestamp \
-                and other.provider == self.provider:
-            return True
-        return False
-
-    def __repr__(self):
-        return "<ExchangeRate {0}={1} @ {2} UTC from {3}>".format(
-            self.currency, self.price,
-            datetime.utcfromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S'), self.provider)
-
-    def __str__(self):
-        return "<ExchangeRate {0}={1} @ {2} UTC from {3}>".format(
-            self.currency, self.price,
-            datetime.utcfromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S'), self.provider)

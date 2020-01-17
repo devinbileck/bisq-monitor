@@ -16,6 +16,17 @@ class PriceNode(object):
         self.__address = address
         self.__operator = operator
 
+    def __str__(self):
+        return "<PriceNode {}>".format(self.address)
+
+    def __repr__(self):
+        return "<PriceNode {}>".format(self.address)
+
+    def __eq__(self, other):
+        if isinstance(other, PriceNode) and other.address == self.address:
+            return True
+        return False
+
     @property
     def address(self):
         return self.__address
@@ -65,14 +76,3 @@ class PriceNode(object):
             exchange_rate = ExchangeRate(currency['currencyCode'], currency['price'], currency['timestampSec']/1000, currency['provider'])
             prices[currency['currencyCode']] = exchange_rate
         return prices
-
-    def __eq__(self, other):
-        if isinstance(other, PriceNode) and other.address == self.address:
-            return True
-        return False
-
-    def __repr__(self):
-        return "<PriceNode {}>".format(self.address)
-
-    def __str__(self):
-        return "<PriceNode {}>".format(self.address)

@@ -27,19 +27,6 @@ class FeeRateModel(Base):
         self.price = price
         self.timestamp = timestamp
 
-    def to_dict(self):
-        return {"price_node": self.price_node,
-                "currency": self.currency,
-                "price": self.price,
-                "timestamp": self.timestamp}
-
-    @staticmethod
-    def parse(**kwargs):
-        return FeeRateModel(kwargs['price_node'],
-                            kwargs['currency'],
-                            kwargs['price'],
-                            kwargs['timestamp'])
-
     def __str__(self):
         return json.dumps(self.to_dict())
 
@@ -54,3 +41,16 @@ class FeeRateModel(Base):
                     self.timestamp == other.timestamp:
                 return True
         return False
+
+    def to_dict(self):
+        return {"price_node": self.price_node,
+                "currency": self.currency,
+                "price": self.price,
+                "timestamp": self.timestamp}
+
+    @staticmethod
+    def parse(**kwargs):
+        return FeeRateModel(kwargs['price_node'],
+                            kwargs['currency'],
+                            kwargs['price'],
+                            kwargs['timestamp'])
